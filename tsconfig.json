@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "types": ["node", "jest"],            // <-- para que Jest reconozca tipos
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true            // <-- útil si importás JSON en tests o configs
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": ["src","tests"]
+}

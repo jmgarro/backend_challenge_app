@@ -1,0 +1,31 @@
+# Etapa 1: Builder
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copia e instala TODAS las dependencias (prod + dev)
+COPY package*.json ./
+RUN npm install
+
+# Copia el resto del código
+COPY . .
+
+# Compila el código TypeScript (asume que tsc deja JS en 'dist/')
+RUN npm run build
+
+# Etapa 2: Producción (solo código JS + dependencias necesarias)
+FROM node:18-alpine
+WORKDIR /app
+
+# Copia solo las dependencias necesarias
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copia los archivos compilados de la etapa anterior
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/challenge/input ./challenge/input
+
+# Expone el puerto que usa la app
+EXPOSE 3000
+
+# Ejecuta la app
+CMD ["node", "dist/index.js"]

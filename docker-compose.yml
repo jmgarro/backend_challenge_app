@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db-dockerfile/Dockerfile
+    container_name: sqlserver_db_challenge
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+    volumes:
+      - sql_server_data:/var/opt/mssql
+    networks:
+      - app_network
+    user: root
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${SA_PASSWORD}", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  backend-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_challenge_app
+    volumes:
+      - .:/app
+      - ./challenge/input:/app/challenge/input
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 1433
+      DB_USER: sa
+      DB_PASSWORD: ${SA_PASSWORD}
+      DB_DATABASE: challenge_clients_db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  sql_server_data:

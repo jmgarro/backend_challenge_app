@@ -27,3 +27,10 @@ yarn-error.log*
 Thumbs.db
 
 package-lock.json
+
+# Docker generated files
+**/docker-compose.override.yml
+**/docker-compose.override.yaml
+
+# Jest snapshots
+**/__snapshots__/

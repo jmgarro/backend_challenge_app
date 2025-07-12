@@ -1,5 +1,7 @@
 import request from 'supertest';
-import app from '../src/index';
+import app from '../src/';
+
+
 
 describe('GET /health', () => {
   it('debería responder con estado 200 y estructura válida', async () => {

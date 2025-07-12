@@ -15,6 +15,8 @@ const dbConfig: sql.config = {
 
 let pool: sql.ConnectionPool;
 
+/*se gestiona al conexión con la bd*/
+
 export async function getDbPool(): Promise<sql.ConnectionPool> {
     if (!pool) {
         pool = await sql.connect(dbConfig);

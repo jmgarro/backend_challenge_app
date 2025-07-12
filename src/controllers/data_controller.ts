@@ -19,6 +19,7 @@ export function getProcessingStatus() {
     };
 }
 
+/*función para procesar las líneas del archivo y realizar las validaciones sobre los datos */
 export async function processFileController(filePath: string) {
     if (isProcessingFile) {
         console.log('⚠️ Ya hay un procesamiento en curso. Se ignora.');
@@ -50,7 +51,7 @@ export async function processFileController(filePath: string) {
         } else {
             errorRecords++;
         }
-
+        /*se usa un batch size de 250 para no tener problemas con la cantidad de parámetros mandados a MSSQL*/
         if (recordsToInsert.length >= BATCH_SIZE) {
             try {   
                 console.log("estoy en antes del insertBatch1");
@@ -86,6 +87,7 @@ function updateStatus() {
     console.log(getProcessingStatus());
 }
 
+/* esta función parsea cada línea y aplica validaciones*/
 function parseClientLine(line: string): ClientRecord | null {
     const parts = line.split('|');
     if (parts.length !== 7) return null;
@@ -130,13 +132,14 @@ function parseClientLine(line: string): ClientRecord | null {
             EsSujetoObligado: parsedEsSujetoObligado
         };
     } catch {
-        console.log("estoy eliminando registros en el data controller");
+        console.log("estoy eliminando registros corruptos en el data controller");
         return null;
     }
 }
 
 export { parseClientLine };
 
+/* función para validar fechas usando la librería date-fns */
 function parseDate(rawDate: string): Date | null {
     const trimmed = rawDate.trim();
     const invalids = ['0000-00-00', '00/00/0000', '99/99/9999', '9999-99-99'];

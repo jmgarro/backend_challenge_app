@@ -10,11 +10,13 @@ export interface ClientRecord {
     EsSujetoObligado: boolean | null;
 }
 
+/* función para insertar los datos en la base */
 export async function insertBatch(records: ClientRecord[]): Promise<number> {
     if (records.length === 0) return 0;
 
     console.log("estoy en el insertbatch antes del filtro");
 
+    /*garantizo el closure del modelo filtrando solo los datos válidos, más allá de las validaciones del controller*/
     const validRecords = records.filter(r =>
         typeof r.NombreCompleto === 'string' && r.NombreCompleto.length <= 100 &&
         typeof r.Estado === 'string' && r.Estado.length <= 10 &&
@@ -73,7 +75,7 @@ export async function insertBatch(records: ClientRecord[]): Promise<number> {
         console.log("estoy preparando la query");
         //console.log(buildQueryDebugString(query, queryParams));
 
-        await request.query(query);
+        await request.query(query);/* acá se podría usar indistintamente bulk, con la cantidad de parámetros enviados en este caso es lo mismo */
         await transaction.commit();
 
         const insertedCount = validRecords.length;

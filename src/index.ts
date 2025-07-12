@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 const DATA_FILE_PATH = path.join(__dirname, '..', 'challenge', 'input', 'CLIENTES_IN_0425.dat');
 
+/*cuando se levanta la app se regenera el archivo de datos de entrada con los parámetros fijados */
 async function startServer() {
   try {
     await getDbPool(); // Asegura conexión a la base
@@ -29,6 +30,7 @@ async function startServer() {
 
 startServer();
 
+/*servicio para poblar la tabla Clientes con los datos procesados del archivo de entrada */
 app.get('/health', async (req, res) => {
   try {
     await processFileController(DATA_FILE_PATH); // Usa el archivo ya generado al iniciar
@@ -39,6 +41,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
+/* servicio para disponibilizar información del proceso de docker con sus parámetros de consumos de recursos */
 app.get('/metrics', (req, res) => {
   const memoriaUso = process.memoryUsage();
   const cpuUso = process.cpuUsage();

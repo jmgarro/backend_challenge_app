@@ -9,6 +9,10 @@ const csvParser = require('csv-parser');
 const BATCH_SIZE = 100;
 const CSV_FILE_PATH = path.resolve(__dirname, 'clientes.csv');
 
+/* este archivo contiene un segundo ejemplo que usa un archivo potencialmente más grande, procesado en forma de stream
+un loteado de datos más chico y usa sentencias como stream.pause para evitar que la memoria permanezca
+llena si la base está lenta */
+
 let processedRecords = 0;
 
 interface ClienteCSV {
@@ -81,7 +85,7 @@ async function run() {
         server: 'localhost',
         database: 'TuBaseDeDatos',
         options: {
-            encrypt: false, // o true si usás Azure
+            encrypt: false, // o true si se usa Azure
             trustServerCertificate: true,
         },
     });
